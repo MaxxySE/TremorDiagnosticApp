@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GyroscopeActivity">
+
+    <Button
+        android:id="@+id/receiveAccDataBtn"
+        android:layout_width="171dp"
+        android:layout_height="wrap_content"
+        android:onClick="onReceiveAccData"
+        android:text="начать"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.897" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Вытяните руки вперед, держа телефон в одной из них. После чего нажмите на кнопку &quot;начать&quot;. Телефон провибрирует. После вибрации спустя 0.5 секунды начнется сбор данных с гироскопа в течение 7 секунд, все это время стойте в изначальном положении. Когда закончится сбор данных, телефон провибрирует еще раз, после чего результат будет сохранен."
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

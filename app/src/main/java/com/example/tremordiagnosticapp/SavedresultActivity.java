@@ -17,6 +17,6 @@ public class SavedresultActivity extends AppCompatActivity {
 
 
     public void onBackToMain(View view){
-        changePage.moveFromTo(this, MainActivity.class, "");
+        changePage.moveFromTo(this, MainActivity.class, "", "");
     }
 }

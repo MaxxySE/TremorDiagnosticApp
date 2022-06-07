@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public void onContinueToSpiralPage(View view){
         getFileName();
         if (!fileName.equals("")) {
-            changePage.moveFromTo(this, SpiralActivity.class, fileName);
+            changePage.moveFromTo(this, SpiralActivity.class, fileName, "");
         } else {
             Toast.makeText(this,
                     "Вы не ввели название файла.",
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSavedResults(View view){
-        changePage.moveFromTo(this, SavedresultActivity.class, "");
+        changePage.moveFromTo(this, SavedresultActivity.class, "", "");
     }
 
 }

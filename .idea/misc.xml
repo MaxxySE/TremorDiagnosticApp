@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/maxim/AndroidStudioProjects/TremorDiagnosticApp/app/src/main/res/layout/activity_accelerometer.xml" value="0.2015625" />
         <entry key="..\:/Users/maxim/AndroidStudioProjects/TremorDiagnosticApp/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
         <entry key="..\:/Users/maxim/AndroidStudioProjects/TremorDiagnosticApp/app/src/main/res/layout/activity_savedresult.xml" value="0.358695652173913" />
         <entry key="..\:/Users/maxim/AndroidStudioProjects/TremorDiagnosticApp/app/src/main/res/layout/activity_spiral.xml" value="0.25" />

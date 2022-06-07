@@ -1,25 +1,18 @@
 package com.example.tremordiagnosticapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import com.example.tremordiagnosticapp.entity.SpiralData;
+import com.example.tremordiagnosticapp.entity.SpiralDataEntry;
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,21 +25,20 @@ public class SpiralActivity extends AppCompatActivity {
     public float width, height, size, xtmp, ytmp;
 
     public ChangePage changePage = new ChangePage();
+    public SpiralData spiralData = new SpiralData();
+    SendDataToServer sendDataToServer = new SendDataToServer();
+    public GetCurrentDateClass getCurrentDateClass = new GetCurrentDateClass();
+
     public SpiralView spiralView;
     public HeatMap heatMap;
     public String fileName="";
-    public File file;
-    public DataToJson dataToJson;
     public Button nextSpiralBtn;
-    public NewFile newFile = new NewFile();
+
 
     public List<Float> xDataMap = new ArrayList<Float>();
     public List<Float> yDataMap = new ArrayList<Float>();
     public List<Float> xDataSpiral = new ArrayList<Float>();
     public List<Float> yDataSpiral = new ArrayList<Float>();
-    public List<Float> delta = new ArrayList<Float>();
-    public List<Float> xClosest = new ArrayList<Float>();
-    public List<Float> yClosest = new ArrayList<Float>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,16 +94,12 @@ public class SpiralActivity extends AppCompatActivity {
         }
     }
 
-    public void firstDraw(){spiralView.setup(this, width, height, size, turnsAmount);}
-
     public void defineSpiralSize(){ size = width/constWidth * constSize; }
 
+    public void firstDraw(){spiralView.setup(this, width, height, size, turnsAmount);}
 
     public void onDrawNext(View view){
         saveAndUpdateData();
-        dataToJson();
-        sendDataToServer();
-        //deleteTmpFiles();
         switch(turnsAmount){
             case 30:
                 constSize = 12; turnsAmount = 40; countsOfTurns = 3;
@@ -120,8 +108,7 @@ public class SpiralActivity extends AppCompatActivity {
                 constSize = 10; turnsAmount = 50; countsOfTurns = 4;
                 break;
             case 50:
-                Toast.makeText(getApplicationContext(),"Результат сохранен.", Toast.LENGTH_SHORT).show();
-                changePage.moveFromTo(this, MainActivity.class, "");
+                changePage.moveFromTo(this, GyroscopeActivity.class, fileName, "");
                 break;
         }
         refreshSpiralCoors();
@@ -137,12 +124,6 @@ public class SpiralActivity extends AppCompatActivity {
 
             heatMapCoordsList(x, y);
 
-            heatMap.setRadius(270d);
-            heatMap.setMinimum(0.0);
-            heatMap.setMaxDrawingWidth(400);
-            heatMap.setMaximum(100.0);
-            HeatMap.DataPoint point = new HeatMap.DataPoint(x, y, 20f);
-            heatMap.addData(point);
         }
     }
 
@@ -156,62 +137,18 @@ public class SpiralActivity extends AppCompatActivity {
         this.yDataSpiral = spiralView.getYCoords();
     }
 
-    public void takeScreenShot(){
-        View root = getWindow().getDecorView();
-        root.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(root.getDrawingCache());
-        root.setDrawingCacheEnabled(false);
-        file.getParentFile().mkdirs();
-
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void saveAndUpdateData(){
-        file = newFile.createFile(fileName, countsOfTurns,
-                ".jpg", "DiagnosticData_Picture","Pictures", this);
-        nextSpiralBtn.setVisibility(View.INVISIBLE);
-        spiralView.setVisibility(View.INVISIBLE);
-
-        heatMap.forceRefresh();
         getSpiralCoords();
         countClosestPoint();
 
-        // --------------------- for debug --------------------- //
-//        System.out.print("LIST SIZE:" + xdataspiral.size() + "\n\n");
-//        for(int i=0;i<xdataspiral.size();i++){
-//            System.out.println("XData: " + xdata.get(i) + " TURNS: " + countsOfTurns);
-//            System.out.println("YData: " + ydata.get(i) + " TURNS: " + countsOfTurns + "\n\n");
-//        }
+        spiralData.setTurns(countsOfTurns);
+        spiralData.setName(fileName);
 
-//        System.out.println("LIST SIZE:" + xDataMap.size() + "\n\n");
-//        for(int i = 0; i < xDataMap.size(); i++){
-//            System.out.println("XData: " + xDataMap.get(i) + " TURNS: " + countsOfTurns);
-//            System.out.println("YData: " + yDataMap.get(i) + " TURNS: " + countsOfTurns + "\n\n");
-//        }
-        System.out.print("\n\n");
-        for(int k = 0; k < delta.size(); k++){
-            System.out.print("Closest X: " + xClosest.get(k) + " Closest Y: " + yClosest.get(k)
-                    + " Delta: " + delta.get(k) + "\n");
-        }
 
-        // --------------------- for debug --------------------- //
+        System.out.print(spiralData.getData().size() + "\n");
+        System.out.print(spiralData + "\n");
 
-        //textWait.setVisibility(View.INVISIBLE);
-
-        takeScreenShot();
-        nextSpiralBtn.setVisibility(View.VISIBLE);
-        spiralView.setVisibility(View.VISIBLE);
-        heatMap.clearData();
-        heatMap.forceRefresh();
+        dataToJson();
     }
 
     public void countClosestPoint(){
@@ -226,24 +163,23 @@ public class SpiralActivity extends AppCompatActivity {
                     ytmp = yDataMap.get(i);
                 }
             }
-            delta.add(pointDiff);
-            xClosest.add(xtmp);
-            yClosest.add(ytmp);
+            SpiralDataEntry spiralDataEntry = new SpiralDataEntry(xtmp, ytmp, pointDiff);
+            spiralData.getData().add(spiralDataEntry);
             pointDiff = 1;
         }
     }
 
     public void dataToJson(){
-        dataToJson = new DataToJson(this);
-        dataToJson.setData(xClosest, yClosest, delta);
-        dataToJson.saveDataToJson(fileName, countsOfTurns);
+        spiralData.setDateTime(getCurrentDateClass.getCurrentDateAndTime());
+        Gson gson = new Gson();
+        String str = gson.toJson(spiralData);
+        DataSaver.writeDataToFile(fileName, "SpiralData", str);
         refreshCoordsForJson();
+        sendDataToServer.getFilePath(fileName, "SpiralData");
     }
 
     public void refreshCoordsForJson(){
-        xClosest.clear();
-        yClosest.clear();
-        delta.clear();
+        spiralData = new SpiralData();
         xDataMap.clear();
         yDataMap.clear();
     }
@@ -253,31 +189,9 @@ public class SpiralActivity extends AppCompatActivity {
         yDataSpiral.clear();
     }
 
-    public void sendDataToServer(){
-        //TODO: there is I should send the collected data from the user to the server
-        // that will process it
-        if(file.exists()){
-            System.out.println("Pic file still exists");
-        }
-        if(dataToJson.jsonFile.exists()){
-            System.out.println("JSON file still exists");
-        }
-    }
-
-    public void deleteTmpFiles(){
-        file.delete();
-        dataToJson.jsonFile.delete();
-        if(!file.exists()){
-            System.out.println("Pic file has been deleted");
-        }
-        if(!dataToJson.jsonFile.exists()){
-            System.out.println("JSON file has been deleted");
-        }
-    }
 
     public void onBackToMain(View view){
-        //deleteTmpFiles();
-        changePage.moveFromTo(this, MainActivity.class, "");
+        changePage.moveFromTo(this, MainActivity.class, "", "");
         //TODO: a data will deletes by itself when user will переходить on the next spiral and save only a result
         // also erase data if the user closes the app
         // Resize heatmap properties in dependence of screen resolution!!!
