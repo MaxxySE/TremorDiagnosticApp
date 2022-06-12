@@ -5,18 +5,25 @@ import android.os.Environment;
 
 import java.io.File;
 
-public class DataFile {
+public class GenerateNewFile {
 
-    private GetCurrentDateClass getCurrentDateClass = new GetCurrentDateClass();
+    private GetCurrentDateAndTime getCurrentDateAndTime = new GetCurrentDateAndTime();
+    String currentDateAndTime;
     public String fileDir = "";
 
 
 
     public void setFileDir(String fileName,
                            String fileType, String dataType, String dataSubtype){
-        String currentDateAndTime = getCurrentDateClass.getCurrentDateAndTime();
+        if(!dataSubtype.equals("Results")){
+            currentDateAndTime = getCurrentDateAndTime.getCurrentDateAndTime();
+        } else {
+            currentDateAndTime = "List";
+        }
+
+
         fileDir = Environment.getExternalStorageDirectory() + "/" + "Documents"
-                + "/TremorDataCollector/" + dataType + "/" + dataSubtype + "/"
+                + "/DiagnosticData/" + dataType + "/" + dataSubtype + "/"
                 + currentDateAndTime + "_"+ fileName + "_" + dataSubtype + fileType;
         //Temporary hardcoded "Documents" in the path string
     }

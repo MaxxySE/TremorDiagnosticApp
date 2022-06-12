@@ -19,9 +19,9 @@ public class DataSaver<T> {
     public static void writeDataToFile(String fileName, String dataSubtype, String gson){
         String fileType = ".json";
         String dataType = "JSON";
-        DataFile dataFile = new DataFile();
+        GenerateNewFile generateNewFile = new GenerateNewFile();
 
-        File file = dataFile.createFile(fileName, fileType,
+        File file = generateNewFile.createFile(fileName, fileType,
                     dataType, dataSubtype);
         file.getParentFile().mkdirs();
         try {

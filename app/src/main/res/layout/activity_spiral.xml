@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SpiralActivity">
+    tools:context=".SpiralDataReceivingPage">
 
     <com.example.tremordiagnosticapp.SpiralView
         android:id="@+id/spiralDrawView"
@@ -34,12 +34,12 @@
         android:layout_height="49dp"
         android:onClick="onBackToMain"
         android:text="Назад"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/spiralDrawView"
+        app:layout_constraintEnd_toEndOf="@+id/spiralDrawView"
         app:layout_constraintHorizontal_bias="0.052"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/spiralDrawView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.111" />
+        app:layout_constraintVertical_bias="0.052" />
 
     <Button
         android:id="@+id/nextSpiralBtn"

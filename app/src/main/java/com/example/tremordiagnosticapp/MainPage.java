@@ -1,21 +1,17 @@
 package com.example.tremordiagnosticapp;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainPage extends AppCompatActivity {
 
     public TextView fileNameField;
     public String fileName;
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public void onContinueToSpiralPage(View view){
         getFileName();
         if (!fileName.equals("")) {
-            changePage.moveFromTo(this, SpiralActivity.class, fileName, "");
+            changePage.moveFromTo(this, SpiralDataReceivingPage.class, fileName, "");
         } else {
             Toast.makeText(this,
                     "Вы не ввели название файла.",
@@ -69,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSavedResults(View view){
-        changePage.moveFromTo(this, SavedresultActivity.class, "", "");
+        changePage.moveFromTo(this, SavedResultsPage.class, "", "");
     }
 
 }

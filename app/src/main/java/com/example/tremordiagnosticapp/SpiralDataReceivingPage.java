@@ -18,7 +18,7 @@ import java.util.List;
 
 import ca.hss.heatmaplib.HeatMap;
 
-public class SpiralActivity extends AppCompatActivity {
+public class SpiralDataReceivingPage extends AppCompatActivity {
 
 
     public int constWidth = 1080, constSize = 15, countsOfTurns = 2, turnsAmount = 30;
@@ -27,8 +27,8 @@ public class SpiralActivity extends AppCompatActivity {
     public ChangePage changePage = new ChangePage();
     public SpiralData spiralData = new SpiralData();
     SendDataToServer sendDataToServer = new SendDataToServer();
-    public GetCurrentDateClass getCurrentDateClass = new GetCurrentDateClass();
-
+    public GetCurrentDateAndTime getCurrentDateAndTime = new GetCurrentDateAndTime();
+    public ReceiveDataFromServer receiveDataFromServer = new ReceiveDataFromServer();
     public SpiralView spiralView;
     public HeatMap heatMap;
     public String fileName="";
@@ -57,8 +57,8 @@ public class SpiralActivity extends AppCompatActivity {
         getInputtedData();
         screenSizeDefiner();
         variablesDefiner();
+        screenModeDefiner();
         defineSpiralSize();
-        fullScreenMode();
         firstDraw();
     }
 
@@ -76,15 +76,8 @@ public class SpiralActivity extends AppCompatActivity {
         height = outSize.y;
     }
 
-    public void fullScreenMode(){
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LOW_PROFILE
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE
-        );
+    public void screenModeDefiner(){
+        new EnableFullscreenMode(this);
     }
 
     public void getInputtedData(){
@@ -108,13 +101,19 @@ public class SpiralActivity extends AppCompatActivity {
                 constSize = 10; turnsAmount = 50; countsOfTurns = 4;
                 break;
             case 50:
-                changePage.moveFromTo(this, GyroscopeActivity.class, fileName, "");
+                startReceivingDataFromServer(fileName);
+                changePage.moveFromTo(this, MainPage.class, fileName, "");
                 break;
         }
         refreshSpiralCoors();
         defineSpiralSize();
         spiralView.setup(this, width, height, size, turnsAmount);
         getSpiralCoords();
+    }
+
+    public void startReceivingDataFromServer(String fileName){
+        receiveDataFromServer.getData(fileName, getCurrentDateAndTime.getCurrentDateAndTime());
+        new Thread(receiveDataFromServer).start();
     }
 
     public void heatMapDraw(MotionEvent event){
@@ -144,7 +143,6 @@ public class SpiralActivity extends AppCompatActivity {
         spiralData.setTurns(countsOfTurns);
         spiralData.setName(fileName);
 
-
         System.out.print(spiralData.getData().size() + "\n");
         System.out.print(spiralData + "\n");
 
@@ -170,12 +168,12 @@ public class SpiralActivity extends AppCompatActivity {
     }
 
     public void dataToJson(){
-        spiralData.setDateTime(getCurrentDateClass.getCurrentDateAndTime());
+        spiralData.setDateTime(getCurrentDateAndTime.getCurrentDateAndTime());
         Gson gson = new Gson();
         String str = gson.toJson(spiralData);
         DataSaver.writeDataToFile(fileName, "SpiralData", str);
-        refreshCoordsForJson();
         sendDataToServer.getFilePath(fileName, "SpiralData");
+        refreshCoordsForJson();
     }
 
     public void refreshCoordsForJson(){
@@ -191,9 +189,6 @@ public class SpiralActivity extends AppCompatActivity {
 
 
     public void onBackToMain(View view){
-        changePage.moveFromTo(this, MainActivity.class, "", "");
-        //TODO: a data will deletes by itself when user will переходить on the next spiral and save only a result
-        // also erase data if the user closes the app
-        // Resize heatmap properties in dependence of screen resolution!!!
+        changePage.moveFromTo(this, MainPage.class, "", "");
     }
 }

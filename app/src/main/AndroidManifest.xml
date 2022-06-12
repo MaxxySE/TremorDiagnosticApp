@@ -16,18 +16,19 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:screenOrientation="portrait"
         android:theme="@style/Theme.TremorDiagnosticApp">
         <activity
-            android:name=".GyroscopeActivity"
+            android:name=".SavedResultsPage"
+            android:screenOrientation="locked"
             android:exported="false" />
         <activity
-            android:name=".SavedresultActivity"
+            android:name=".SpiralDataReceivingPage"
+            android:screenOrientation="locked"
             android:exported="false" />
         <activity
-            android:name=".SpiralActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".MainPage"
+            android:screenOrientation="locked"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

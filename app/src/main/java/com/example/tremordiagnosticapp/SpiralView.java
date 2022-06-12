@@ -57,11 +57,13 @@ public class SpiralView extends View {
         return ydata;
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawSpiral(canvas);
+    }
 
+    public void drawSpiral(Canvas canvas){
         for (float i = 0; i < this.turnsAmount; i += 0.01) {
 
             angle = 0.5f * i;

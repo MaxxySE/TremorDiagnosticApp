@@ -5,10 +5,9 @@ import java.util.List;
 
 
 public class SpiralData {
-    String name;
-    String dateTime; //TODO: receive current time
-    float turns;
-
+    private String name;
+    private String dateTime;
+    private float turns;
     List<SpiralDataEntry> data = new ArrayList<>();
 
     public float getTurns() {return turns;}
