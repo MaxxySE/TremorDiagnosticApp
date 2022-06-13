@@ -7,7 +7,7 @@ import java.io.File;
 public class ReceivingDataFromJson {
     public ParsingJsonFile parsingJsonFile = new ParsingJsonFile();
     public GenerateNewFile generateNewFile = new GenerateNewFile();
-    private SavedData[] list;
+    private SavedData[] list = {};
 
 
     public SavedData[] receivingData(){
